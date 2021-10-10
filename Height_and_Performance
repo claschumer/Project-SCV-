@@ -1,0 +1,35 @@
+#See results here: https://www.overleaf.com/read/qdybynqzdgns
+
+# To build the indicator of performance we start by compute the number of victory and defeat of each player
+number_win_by_name<-as.data.frame(table(atp_match$winner_name))
+number_lose_by_name<-as.data.frame(table(atp_match$loser_name))
+
+#we put this data in the same data frame
+merge(number_win_by_name, number_lose_by_name, by ="Var1")
+
+# we keep only  the lie for which the payer has played at least 20 matches
+win_lose_sup_by_name <- subset(win_lose_by_name, win_lose_by_name$Freq.x + win_lose_by_name$Freq.y > 20 )
+
+#Then we compute the Rtaio of performance win matches/ total nbr of matches
+win_lose_sup_by_name$Ratio_w_l=win_lose_sup_by_name$Freq.x/(win_lose_sup_by_name$Freq.y+win_lose_sup_by_name$Freq.x)
+
+# we draw the bowplot of the performance to observe its distribution among the player
+boxplot(win_lose_sup_by_name$Ratio_w_l)
+
+# we add the height of the player to our data frame and we keep only the distincts lines
+size_and_name<-as.data.frame(atp_match[,c(11,13)])
+names(size_and_name)[names(size_and_name) == 'winner_name'] <- 'Var1'
+win_lose_size_name<-merge(win_lose_by_name, size_and_name, by ="Var1")
+win_lose_size_name<-distinct(win_lose_size_name)
+
+# we draw the qq plot to observe the correlation between the ratio of performance and the height + line of linear regression
+ggplot(data = win_lose_size_name, aes(x = win_lose_size_name$Ratio_w_l, y = win_lose_size_name$winner_ht)) 
++ geom_point(color='red') 
++ geom_smooth(method = "lm", se = FALSE)
++ labs(x = "height (cm) ",
++ y = "Performance",
++ title = "Correlation between performance and size")
+
+# we also add the Spearman test of correlation
+res<-cor.test(win_lose_size_name$Ratio_w_l,win_lose_size_name$winner_ht, method="spearman")
+res
