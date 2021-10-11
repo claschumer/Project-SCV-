@@ -1,5 +1,7 @@
 #See results here: https://www.overleaf.com/read/qdybynqzdgns
 
+//------------------------HEIGHT AND PERFORMANCE------------------------------------------------------------------------
+
 # To build the indicator of performance we start by compute the number of victory and defeat of each player
 number_win_by_name<-as.data.frame(table(atp_match$winner_name))
 number_lose_by_name<-as.data.frame(table(atp_match$loser_name))
@@ -7,10 +9,10 @@ number_lose_by_name<-as.data.frame(table(atp_match$loser_name))
 #we put this data in the same data frame
 merge(number_win_by_name, number_lose_by_name, by ="Var1")
 
-# we keep only  the lie for which the payer has played at least 20 matches
+# we keep only  the line for which the payer has played at least 20 matches
 win_lose_sup_by_name <- subset(win_lose_by_name, win_lose_by_name$Freq.x + win_lose_by_name$Freq.y > 20 )
 
-#Then we compute the Rtaio of performance win matches/ total nbr of matches
+#Then we compute the Ratio of performance win matches/ total nbr of matches
 win_lose_sup_by_name$Ratio_w_l=win_lose_sup_by_name$Freq.x/(win_lose_sup_by_name$Freq.y+win_lose_sup_by_name$Freq.x)
 
 # we draw the bowplot of the performance to observe its distribution among the player
@@ -33,3 +35,24 @@ ggplot(data = win_lose_size_name, aes(x = win_lose_size_name$Ratio_w_l, y = win_
 # we also add the Spearman test of correlation
 res<-cor.test(win_lose_size_name$Ratio_w_l,win_lose_size_name$winner_ht, method="spearman")
 res
+
+
+
+//------------------------AGE AND PERFORMANCE------------------------------------------------------------------------
+
+# we add the ageof the player to our data frame and we keep only the distincts lines
+age_and_name<-as.data.frame(atp_match[,c(11,15)])
+names(age_and_name)[names(age_and_name) == 'winner_name'] <- 'Var1'
+win_lose_sup_by_name<-merge(win_lose_sup_by_name, age_and_name, by ="Var1")
+win_lose_sup_by_name<-distinct(win_lose_sup_by_name)
+View(win_lose_sup_by_name)
+
+# we draw the qq plot to observe the correlation between the ratio of performance and the age+ line of linear regression
+ggplot(data = win_lose_sup_by_name, aes(x = win_lose_sup_by_name$Ratio_w_l, y = win_lose_sup_by_name$winner_age))
++ geom_point(color='red') + geom_smooth(method = "lm", se = FALSE)+
+labs(x = "Performance ",y = "age", title = "Correlation between performance and age")
+
+# we also add the Spearman test of correlation
+res<-cor.test(win_lose_sup_by_name$Ratio_w_l,win_lose_sup_by_name$winner_age, method="spearman")
+res
+
