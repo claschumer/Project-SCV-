@@ -1,3 +1,6 @@
+#To be able to run this file, you only need to change the value of path in the 
+#section 'Load the data' to the path to the git on your computer
+
 library(data.table)
 library(tmaptools)
 library(sf)
@@ -15,8 +18,9 @@ library(RColorBrewer)
 rm(list = ls())
 
 # Load the data ==================================================
-path = '/Users/raphaelmirallie/Documents/GitHub/Project-SCV-/atp_matches_2019.csv'
-data <- read.csv(path)
+path <- '~/Documents/GitHub/Project-SCV-'
+data_path <- paste(path,'/atp_matches_2019.csv',sep='')
+data <- read.csv(data_path)
 atp_matches_2019 <- as.data.table(data)
 
 # Get an idea of the data set
@@ -26,15 +30,16 @@ head(atp_matches_2019)
     
     # List countries ------------------------------------------------
     
-        #First we want to count how many players are from a specific country
-        #Here we check that every player won at least one time
-atp_matches_2019[, sum(table(winner_name) == 0)] == 0   
-    
-        #Since the result is true we know that the list of all players is in 
-        #the column 'winner_name'. Now we are going to keep only one occurrence
-        #of each player and his country
-list_players <- atp_matches_2019[match(unique(winner_name),winner_name),]
-    
+        #First we add all of the winners and the losers (with their country) 
+        #in a data frame 'list_players' for every single match
+winner <- atp_matches_2019[,c('winner_name','winner_ioc')]
+loser <- atp_matches_2019[,c('loser_name','loser_ioc')]
+colnames(loser) <- c('winner_name','winner_ioc')
+list_all_matches <- rbind(winner,loser)
+        
+        #Now we keep only the first occurrence of each player
+list_players <- list_all_matches[match(unique(winner_name),winner_name),]
+
         #We sum up (for each country) where each player come from
 list_country <- list_players[, table(winner_ioc)]
 
@@ -43,10 +48,14 @@ list_country <- list_players[, table(winner_ioc)]
         #data. This was done manually since the list of country in the data 
         #'World' does not correspond to anything useful found on the web (at 
         #least in a reasonable amount of time)
+        #The following code was used to help:
+        #country <- World[,c('iso_a3','name')]
+        #country <- st_drop_geometry(country)
+        #write.csv(country,'~/Desktop/country', row.names = FALSE)
 
-path = '/Users/raphaelmirallie/Documents/GitHub/Project-SCV-/Raph/list_pays.csv'
-data <- read.csv(path,header=FALSE)
-number_country <- as.data.frame(data)
+data_path_country <- paste(path,'/Maps/list_pays.csv',sep='')
+data_country <- read.csv(data_path_country,header=FALSE)
+number_country <- as.data.frame(data_country)
 colnames(number_country) <- c('tennis_player')
 
         #Adding the number of tennis player per country to the data 'World'
@@ -80,3 +89,4 @@ map <- tm_shape(tennis_world) + tm_polygons('number_country.tennis_player',
 map
 
 # Next step ==================================================
+
