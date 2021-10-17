@@ -37,11 +37,25 @@ Update on the tasks:
 
 	-Raphaël Mirallié
 Work can be found in the folder ‘Maps’. The goal here is to produce a map of the world with both the number of tennis players per country and the number of tourney per country.
-First we had to extract the wanted number from the raw data and write in down in the files ‘list_country.csv’ and ‘list_tourney.csv’. Then, after discovering the package tmap, the desired numbers were added to the ‘World’ sf data frame. A first plot was produced, but work still need to be done to get better visual result.
+First we had to extract the wanted number from the raw data and write in down in the files ‘list_country.csv’ and ‘list_tourney.csv’. 
+Then, after discovering the package tmap, the desired numbers were added to the ‘World’ sf data frame. A first plot was produced, but work still need to be done to get better visual result.
+
 	-Marie Abadie 
-Week 4 october: Create report, introduction + context + formulate the problematic. Then I start to study the link between height and performance : creation of an indicator of performance for the players in 2019 and study of the correlation between height and performance. Also start to study the link between age and performance. NEXT STEP: since no correlation apparently between age and height and performance try to be more precise. Focus on the link betweeen height and the performance in a particular aspect of the game (the serve) + try to study the matthew effect (more birth in the beggining of the year) for the age.
-Week 11 october: Rewrite indicator of performance (because prblm with R) and pursur the study of the importance of the heigh to have a serve performante. I define different characteristics to evaluate the performance of the serve (perc of aces, double faut, winning points after 1st and 2nd serve etc). Then I study the correlation of these characteristics with the height and the indicator of performance. Mke histogram and boxplot to visualize the data-landscape around the notion of serve. NEXT STEP: analysis and write properly in the report.
+Week 4 october: Create report, introduction + context + formulate the problematic. 
+Then I start to study the link between height and performance : creation of an indicator of performance for the players in 2019 and study of the correlation between height and performance. Also start to study the link between age and performance. 
+NEXT STEP: since no correlation apparently between age and height and performance try to be more precise. Focus on the link betweeen height and the performance in a particular aspect of the game (the serve) + try to study the matthew effect (more birth in the beggining of the year) for the age.
+Week 11 october: Rewrite indicator of performance (because prblm with R) and pursur the study of the importance of the heigh to have a serve performante. 
+I define different characteristics to evaluate the performance of the serve (perc of aces, double faut, winning points after 1st and 2nd serve etc). 
+Then I study the correlation of these characteristics with the height and the indicator of performance. 
+Mke histogram and boxplot to visualize the data-landscape around the notion of serve. 
+NEXT STEP: analysis and write properly in the report.
+
 	-Ilan Perez
+
 	-Paul Bagourd
+I am investigating for the way winners behave across the match in terms of their performances at winning sets and games. I first searched for eventual differences between set 1 or 2, for "best of 3" matches. 
+I conclude that no set appears more determining than the other in order to win the match, but the way the winner win set 1 or 2 is in some ways quite intriging. For example the score they obtain considering set 1 or 2. 
+This could help me to reveal some features of the winners psychology and how they react during the match. 
+
 	-Clarisse Schumer
 			
