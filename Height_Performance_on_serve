@@ -1,0 +1,183 @@
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+REMARK:
+R FILE + VISUALIZATION OF THE DATA + RECAP OF THE RESULTS ARE HERE: https://drive.google.com/drive/folders/1K-CGydJ6NPrkg1ijkGpwfynnxH_FSVva?usp=sharing
+
+NEXT STEP: write the analysis+presentation in the report
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#upload data in R
+options(max.print = 99999999)
+atp_match<-read.csv("C:\\Users\\fnac\\Desktop\\tennis_atp-master\\tennis_atp-master\\atp_matches_2019.csv")
+
+
+# To build the indicator of performance we start by compute the number of victory and defeat of each player
+number_win_by_name<-as.data.frame(table(atp_match$winner_name))
+number_lose_by_name<-as.data.frame(table(atp_match$loser_name))
+
+#we put this data in the same data frame
+win_lose_by_name<-merge(number_win_by_name, number_lose_by_name, by ="Var1")
+
+# we keep only  the line for which the payer has played at least 20 matches
+win_lose_sup_by_name <- subset(win_lose_by_name, win_lose_by_name$Freq.x + win_lose_by_name$Freq.y > 20 )
+
+#Then we compute the Ratio of performance win matches/ total nbr of matches
+win_lose_sup_by_name$Ratio_w_l=win_lose_sup_by_name$Freq.x/(win_lose_sup_by_name$Freq.y+win_lose_sup_by_name$Freq.x)
+
+#rename variable
+names(win_lose_sup_by_name)[names(win_lose_sup_by_name) == "Freq.x"] <- "nbr_win"
+names(win_lose_sup_by_name)[names(win_lose_sup_by_name) == "Freq.y"] <- "nbr_lose"
+names(win_lose_sup_by_name)[names(win_lose_sup_by_name) == "Ratio_w_l"] <- "Performance"
+names(win_lose_sup_by_name)[names(win_lose_sup_by_name) == "Var1"] <- "player"
+player_chara <- win_lose_sup_by_name
+
+#Add the height in player_chara
+size_and_name<-as.data.frame(atp_match[,c(11,13)])
+names(size_and_name)[names(size_and_name) == 'winner_name'] <- 'player'
+player_chara<-merge(player_chara, size_and_name, by ="player")
+install.packages("dplyr")                        # Install and load dplyr
+library(dplyr)
+win_lose_size_name<-distinct(win_lose_size_name)
+player_chara<-distinct(player_chara)
+
+# add total nbr of ace, df, serve in the year for each player in player_chara
+#total nbr of 1st serve made, total nbr of 1st serve point won and total nbr of 2nd serve point won
+serve_charac<-as.data.frame(atp_match[,c(11,28,29,30,31,32,33,19,37,38,39,40,41,42)])
+
+player_chara['nbr_tot_ace'] <- NA
+player_chara['nbr_tot_df'] <- NA
+player_chara['nbr_tot_serve'] <- NA
+player_chara['nbr_tot_1stln'] <- NA
+player_chara['nbr_tot_1stlnWon'] <- NA
+player_chara['nbr_tot_2ndWon'] <- NA
+
+serve_charac <- na.omit(serve_charac)
+
+for (i in 1:nrow(player_chara)){
+	nbr_ace=0
+	nbr_df=0
+	nbr_serve=0
+	nbr_1stln=0
+	nbr_1stlnWon=0
+	nbr_2ndWon=0
+	for (j in 1:nrow(serve_charac))
+		if(serve_charac[j,1]==player_chara[i,1]){
+			nbr_ace=nbr_ace+serve_charac[j,2]
+			nbr_df=nbr_df+serve_charac[j,3]
+			nbr_serve=nbr_serve+serve_charac[j,4]
+			nbr_1stln=nbr_1stln+serve_charac[j,5]
+			nbr_1stlnWon=nbr_1stlnWon+serve_charac[j,6]
+			nbr_2ndWon=nbr_2ndWon+serve_charac[j,7]
+	}
+	for (j in 1:nrow(serve_charac))
+		if(serve_charac[j,8]==player_chara[i,1]){
+			nbr_ace=nbr_ace+serve_charac[j,9]
+			nbr_df=nbr_df+serve_charac[j,10]
+			nbr_serve=nbr_serve+serve_charac[j,11]
+			nbr_1stln=nbr_1stln+serve_charac[j,12]
+			nbr_1stlnWon=nbr_1stlnWon+serve_charac[j,13]
+			nbr_2ndWon=nbr_2ndWon+serve_charac[j,14]
+	}
+	player_chara[i,6]=nbr_ace
+	player_chara[i,7]=nbr_df
+	player_chara[i,8]=nbr_serve
+	player_chara[i,9]=nbr_1stln
+	player_chara[i,10]=nbr_1stlnWon
+	player_chara[i,11]=nbr_2ndWon
+}
+
+#percentage of aces per 100 match and df per 100 matches
+player_chara$perc_ace=(player_chara$nbr_tot_ace/player_chara$nbr_tot_serve)*100
+player_chara$perc_df=(player_chara$nbr_tot_df/player_chara$nbr_tot_serve)*100
+player_chara$per_1stln=(player_chara$nbr_tot_1stln/player_chara$nbr_tot_serve)*100
+player_chara$perc_1stlnWon=(player_chara$nbr_tot_1stlnWon/player_chara$nbr_tot_1stln)*100
+player_chara$perc_2ndWon=(player_chara$nbr_tot_2ndWon/(player_chara$nbr_tot_serve-player_chara$nbr_tot_df-player_chara$nbr_tot_1stln))*100
+
+#create data frame with main charc of serve with height and names
+player_serve<-as.data.frame(player_chara[,c(1,4,5,12,13,14,15,16)])
+
+#Some histograms+boxplot to observe the data-landscape around the serve
+
+#hist percentage of aces
+hist(player_serve$perc_ace, breaks=20,
+main="Number of aces per 100 serves",
+xlab="Percentage of aces",
+xlim=c(0,35),
+col="darkmagenta",
+freq=FALSE
+)
+
+#hist percentages of df
+hist(player_serve$perc_df, breaks=20,
+main="Number of double fauts per 100 serves",
+xlab="Percentage of double fauts",
+xlim=c(0,10),
+col="darkmagenta",
+freq=FALSE
+)
+
+#boxplot 1st serve passed
+boxplot(player_serve$perc_1stln,
+main="Number of successful 1st serve per 100 serves",
+xlab = "Percentage of passed 1st serve",
+ylab = " ",
+col = "orange",
+border = "black",
+horizontal = TRUE,
+notch = TRUE
+)
+
+hist(player_serve$per_1stln, breaks=20,
+main="Number of successful 1st serve per 100 serves",
+xlab="Percentage of passed 1st serve",
+xlim=c(45,75),
+col="darkmagenta",
+freq=FALSE
+)
+
+#double box plot perc winning point after 1st and 2nd serves
+boxplot(player_serve$perc_1stlnWon,player_serve$perc_2ndWon ,
+main = "Distribution of winnning the point on 1st and 2nd successful serves",
+at = c(1,2),
+names = c("1st serve", "2nd serve"),
+las = 2,
+col = c("blue","pink"),
+border = "black",
+horizontal = TRUE,
+notch = TRUE
+)
+
+#Then look for correlation 
+
+#Height VS Ace ggplot
+p<-ggplot(player_serve, aes(winner_ht,perc_ace))+ geom_point(color='red', size=2)
+p + geom_smooth(method = "lm", se = FALSE) +labs(x = "height ",y = "Number of aces per 100 serves", title = "Correlation between height and number of aces")
+
+# we also add the Spearman and pearson test of correlation
+res<-cor.test(player_serve$winner_ht, player_serve$perc_ace, method="spearman")
+res
+
+cor.test(player_serve$winner_ht, player_serve$perc_ace, method = "pearson", conf.level = 0.95)
+
+#other ggplot
+p1<-ggplot(player_serve, aes(winner_ht,perc_1stlnWon))+ geom_point(color='red', size=2) + geom_smooth(method = "lm", se = FALSE)
+ p1+labs(x = "height ",y = "Percentage of winning point for sccesssful 1st serve", title = "Correlation between height and success behind 1st serve")
+cor.test(player_serve$winner_ht, player_serve$perc_1stlnWon, method = "pearson", conf.level = 0.95)
+
+p2<-ggplot(player_serve, aes(winner_ht,perc_2ndWon))+ geom_point(color='red', size=2) + geom_smooth(method = "lm", se = FALSE)
+ p2+labs(x = "height ",y = "Percentage of winning point for sccesssful 2nd serve", title = "Correlation between height and success behind 2nd serve")
+cor.test(player_serve$winner_ht, player_serve$perc_2ndWon, method = "pearson", conf.level = 0.95)
+
+p3<-ggplot(player_serve, aes(winner_ht,perc_df))+ geom_point(color='red', size=2) + geom_smooth(method = "lm", se = FALSE)
+ p3+labs(x = "height ",y = "Number of double faults", title = "Correlation between height and number of double faults")
+cor.test(player_serve$winner_ht, player_serve$perc_df, method = "pearson", conf.level = 0.95)
+
+p4<-ggplot(player_serve, aes(Performance,perc_1stlnWon))+ geom_point(color='red', size=2) + geom_smooth(method = "lm", se = FALSE)
+ p4+labs(x = "Performance",y = "Percentage of winning point for sccesssful 1st serve", title = "Correlation between performance and success behind 1st serve")
+cor.test(player_serve$Perforace, player_serve$perc_1stlnWon, method = "pearson", conf.level = 0.95)
+
+p4<-ggplot(player_serve, aes(Performance,perc_ace))+ geom_point(color='red', size=2) + geom_smooth(method = "lm", se = FALSE)
+ p4+labs(x = "Performance",y = "Number of aces per 100 serves", title = "Correlation between performance and number of aces")
+cor.test(player_serve$Performance, player_serve$perc_ace, method = "pearson", conf.level = 0.95)
