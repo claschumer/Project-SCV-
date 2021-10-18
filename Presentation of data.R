@@ -1,14 +1,20 @@
+library(qqplotr)
+library(ggplot2)
+
 #Number of match categories
 categories <- as.factor(atp_matches_2019$tourney_level)
 str(categories)
 count_categorie <-summary(categories)
+count_categorie
 
-#Visualisation with pie chart 
-pie(count_categorie)
+#Visualization with pie chart 
+dataframe1 <- data_frame(categories=c("A","D","F","G","M"),counts = count_categorie)
+ggplot(dataframe1,aes(x="",y=count_categorie,fill=categories)) + geom_bar(width=1,stat="identity") + coord_polar("y",start=0) +scale_fill_brewer(palette="Blues") + theme_minimal()
 
 #Number of tournaments
 tournaments <- as.factor(atp_matches_2019$tourney_name)
 count_tournaments <- summary(tournaments)
+count_tournaments
 
 #Number of players
 players <- c(atp_matches_2019$winner_name,atp_matches_2019$loser_name)
@@ -19,12 +25,15 @@ str(players)
 #Vectors with all the winners
 players_winner <- atp_matches_2019$winner_name
 newplayers <- unique(players[1:2781])
+newplayers
+#Number of different winners = 364
 
 #Number of height which are different
 height <- atp_matches_2019$winner_ht
 newheight <- unique(height[1:2781])
+newheight
 
-#New vector of height
+#Vector of height for the winner without the NA values and without the replication of the height of the same winner
 index <- duplicated(players_winner)
 for (k in 1:2781) {
   if ( index[k] == "TRUE")  {
@@ -32,15 +41,15 @@ for (k in 1:2781) {
     }
 }
 y <- height[height != 0]
-na.omit(y)
+y <- na.omit(y)
 
-#QQ-plots and boxplot for the height ( for winner)
+#QQ-plots and boxplot for the height for the winners
 par(pty="s",cex = 0.3)
-ggplot(mapping = aes(sample= y)) + stat_qq()
+ggplot(mapping = aes(sample= y)) + stat_qq_band() + stat_qq_line() + stat_qq_point() + labs(x="Theoretical Quantities", y = "Sample Quantiles")+theme_classic() + theme(aspect.ratio = 1)
 dat1 <- data.frame(1:154,y)
-ggplot(dat1,aes(x=dat1$X1.154,y=y)) + geom_boxplot()
+ggplot(dat1,aes(x=dat1$X1.241,y=y)) + geom_boxplot()
 
-#New vector of age
+##Vector of age for the winner without the NA values and without the replication of the age of the same winner
 age <- atp_matches_2019$winner_age
 for (k in 1:2781) {
   if ( index[k] == "TRUE")  {
@@ -48,11 +57,11 @@ for (k in 1:2781) {
   }
 }
 finage <- age[ age!= 0]
-na.omit(finage)
+finage <- na.omit(finage)
 
 #QQ-plot for the age (for winner)
 par(pty="s",cex = 0.3)
-ggplot(mapping = aes(sample= finage)) + stat_qq()
+ggplot(mapping = aes(sample= finage)) + stat_qq_band() + stat_qq_line() + stat_qq_point() + labs(x="Theoretical Quantities", y = "Sample Quantiles")+theme_classic() + theme(aspect.ratio = 1)
 dat2 <- data.frame(1:241,finage)
 ggplot(dat2,aes(x=dat2$X1.241,y=dat2$finage)) + geom_boxplot()
 
@@ -62,8 +71,9 @@ set <- set[!is.na(set)]
 str(set)
 count_set <- summary(set)
 count_set
+# There are 2273 matches in 3 sets and 508 matches in 5 sets
 
-# Match in 3 set
+# Mean duration for matches in 3 sets
 mean1 = 0
 dist <- rep(0,2675)
 min_match <- atp_matches_2019$minutes[-which(is.na(atp_matches_2019$minutes))]
@@ -75,12 +85,13 @@ for (k in 1:2675) {
 }
 mean1 <- mean1/2273
 mean1
-distfin <- dist[dist != 0]
 
+#Box plot for the duration for matches in 3 sets
+distfin <- dist[dist != 0]
 dat4 <- data.frame(1:2167,distfin)
 ggplot(dat4,aes(x=dat4$X1.2167,y= dat4$distfin)) + geom_boxplot()
 
-#Match in 5 set
+#Mean duration for matches in 5 sets
 mean2 = 0
 dist2 = rep(0,2675)
 for (k in 1:2675) {
@@ -91,12 +102,13 @@ for (k in 1:2675) {
 }
 mean2 <- mean2/508
 mean2
-dist2fin <- dist2[dist2 != 0]
 
+#Box plot for the duration for matches in 5 sets
+dist2fin <- dist2[dist2 != 0]
 dat5 <- data.frame(1:508,dist2fin)
 ggplot(dat5,aes(x=dat5$X1.508,y= dat5$dist2fin)) + geom_boxplot()
 
-#Meilleurs joueurs ATP 
+#Best players depending on rank ATP 
 library(dplyr,warn.conflicts = FALSE)
 dat6 <- data.frame(atp_matches_2019$winner_name,atp_matches_2019$tourney_name,atp_matches_2019$winner_rank,atp_matches_2019$winner_ht)
 new <- dat6 %>% filter(dat6$atp_matches_2019.winner_rank < 10) 
