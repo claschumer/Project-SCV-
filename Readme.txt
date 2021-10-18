@@ -58,4 +58,6 @@ I conclude that no set appears more determining than the other in order to win t
 This could help me to reveal some features of the winners psychology and how they react during the match. 
 
 	-Clarisse Schumer
-			
+During week 4, I have worked on the presentation of the data. I asked mysel what where the important information in the variables, and how and how I could present them using plots to introduce our analysis. Indeed, in our data set we have 49 columns representinf different informations. Which one are the most relevant for our problematic ? 
+I have chosen to study the number of match in each different categories and to visualize it with a pie chart. For me it was also relevant to find the number of tournaments, the number of players, and to study with QQplot and box plot the distribution of the height and the age of all the winners and the losers to see if we can observe a relevant marker. Finally, the two other important aspect were the duration of the match for a 3-set and a 5-set match. All these points seemed to me important to study in order to present the data. 
+To conclude the presentation of the data, I have selected the top ten players in the ATP rank and studied their characteristics. You can find this in the file presentation of data. 
