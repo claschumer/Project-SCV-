@@ -1,0 +1,328 @@
+# importing the data from 2019
+tennis2019 <- read.csv("C:/Users/ilanp/Documents/EPFL/Mathématiques/MA master sem 3 automne 2021/Statistical Computation and Visualization/tennis_atp-master/atp_matches_2019.csv")
+
+# extracting the data corresponding to the breakpoint faced and saved by the winner/loser
+winnerFacedBreakPointRaw <- tennis2019$w_bpFaced
+winnerSavedBreakPointRaw <- tennis2019$w_bpSaved
+loserFacedBreakPointRaw <- tennis2019$l_bpFaced
+loserSavedBreakPointRaw <- tennis2019$l_bpSaved
+
+#Cleaning the data of any "NA" line
+winnerFacedBreakPointClean <- na.omit(winnerFacedBreakPointRaw)
+winnerSavedBreakPointClean <- na.omit(winnerSavedBreakPointRaw)
+loserFacedBreakPointClean <- na.omit(loserFacedBreakPointRaw)
+loserSavedBreakPointClean <- na.omit(loserSavedBreakPointRaw)
+
+#means calculation
+length(winner)
+mean(winnerFacedBreakPointClean)
+mean(loserFacedBreakPointClean)
+median(sort(winnerFacedBreakPointClean, decreasing = FALSE))
+median(sort(loserFacedBreakPointClean, decreasing = FALSE))
+
+mean(winnerSavedBreakPointClean)
+mean(loserSavedBreakPointClean)
+median(sort(winnerSavedBreakPointClean, decreasing = FALSE))
+median(sort(loserSavedBreakPointClean, decreasing = FALSE))
+
+# histogram of the break point Faced by the loser 
+ggplot(data = as.data.frame(loserFacedBreakPointClean), aes(loserFacedBreakPointClean)) +
+  geom_histogram(breaks = seq(-1,30, by=1),
+                 col = "red",
+                 fill = "green",
+                 alpha = 1) +
+  labs(title = "Histogram for Faced Break points", 
+     x = "Number of faced break points in one match by the loser", 
+     y = "Count")
+
+# histogram of the break point Faced by the winner 
+ggplot(data = as.data.frame(winnerFacedBreakPointClean), aes(winnerFacedBreakPointClean)) +
+  geom_histogram(breaks = seq(-1,30, by=1),
+                 col = "red",
+                 fill = "green",
+                 alpha = 1) +
+  labs(title = "Histogram for Faced Break points", 
+       x = "Number of faced break points in one match by the winner", 
+       y = "Count")
+
+# histogram of the break point Saved by the loser 
+ggplot(data = as.data.frame(loserSavedBreakPointClean), aes(loserSavedBreakPointClean)) +
+  geom_histogram(breaks = seq(-1,30, by=1),
+                 col = "red",
+                 fill = "blue",
+                 alpha = 1) +
+  labs(title = "Histogram for Saved Break points", 
+       x = "Number of saved break points in one match by the loser", 
+       y = "Count")
+
+# histogram of the break point Saved by the winner 
+ggplot(data = as.data.frame(winnerSavedBreakPointClean), aes(winnerSavedBreakPointClean)) +
+  geom_histogram(breaks = seq(-1,30, by=1),
+                 col = "red",
+                 fill = "blue",
+                 alpha = 1) +
+  labs(title = "Histogram for Saved Break points", 
+       x = "Number of Saved break points in one match by the winner", 
+       y = "Count")
+
+
+
+#removing all matches where no breakpoint where faced by the winner/loser
+#obtaining the position of no faced breakpoint
+index_winner <- vector()
+for (i in 1:length(winnerFacedBreakPointClean)) {
+  if (winnerFacedBreakPointClean[i] == 0){
+    index_winner <- append(index_winner, 0)
+  } else {
+    index_winner <- append(index_winner, 1)
+  }
+}
+index_loser <- vector()
+for (i in 1:length(loserFacedBreakPointClean)) {
+  if (loserFacedBreakPointClean[i] == 0){
+    index_loser <- append(index_loser, 0)
+  } else {
+    index_loser <- append(index_loser, 1)
+  }
+}
+#removing the line in our data
+winnerFacedBreakPoint <- vector()
+winnerSavedBreakPoint <- vector()
+loserFacedBreakPoint <- vector()
+loserSavedBreakPoint <- vector()
+for (i in 1: length(winnerFacedBreakPointClean)){
+  if (index_winner[i] != 0){
+    winnerFacedBreakPoint <- append(winnerFacedBreakPoint, winnerFacedBreakPointClean[i])
+    winnerSavedBreakPoint <- append(winnerSavedBreakPoint, winnerSavedBreakPointClean[i])
+  }
+}
+for (i in 1: length(loserFacedBreakPointClean)){
+  if (index_loser[i] != 0){
+    loserFacedBreakPoint <- append(loserFacedBreakPoint, loserFacedBreakPointClean[i])
+    loserSavedBreakPoint <- append(loserSavedBreakPoint, loserSavedBreakPointClean[i])
+  }
+}
+
+# calculation of the ratio of saved break point of the winner/loser for each match.
+winnerRatioSavedBreakPoint <- winnerSavedBreakPoint / winnerFacedBreakPoint
+loserRatioSavedBreakPoint <- loserSavedBreakPoint / loserFacedBreakPoint
+
+# histogram of the winner ratio 
+ggplot(data= as.data.frame(winnerRatioSavedBreakPoint), aes(winnerRatioSavedBreakPoint)) + 
+  geom_histogram(breaks=seq(0, 1, by=0.1),
+                   col = "red",
+                   fill = "green",
+                   alpha = 1) +
+  labs(title = "Histogram for Break Points", 
+         x = "Ratio of saved break points in one match by the Winner", 
+         y = "Count") +
+  xlim(c(0,1)) +
+  ylim(c(0,600))
+  
+# histogram of the breakpoint saved by the winner. 
+ggplot(data = as.data.frame(winnerSavedBreakPoint), aes(winnerSavedBreakPoint)) +
+  geom_histogram(breaks = seq(-1,30, by=1),
+                 col = "red",
+                 fill = "green",
+                 alpha = 1) +
+  labs(title = "Histogram for Saced Break Points", 
+        x = "Number of saced break points in one match by the Winner", 
+        y = "Count")
+  
+  # histogram of the loser ratio
+  ggplot(data= as.data.frame(loserRatioSavedBreakPoint), aes(loserRatioSavedBreakPoint)) + 
+    geom_histogram(breaks=seq(0, 1, by=0.1),
+                   col = "red",
+                   fill = "green",
+                   alpha = 1) +
+    labs(title = "Histogram for Break Points", 
+         x = "Ratio of saved break points in one match by the loser", 
+         y = "Count") +
+    xlim(c(0,1)) +
+    ylim(c(0,600))
+  
+  # histogram of the breakpoint saved by the loser 
+  ggplot(data = as.data.frame(loserSavedBreakPoint), aes(loserSavedBreakPoint)) +
+    geom_histogram(breaks = seq(-1,30, by=1),
+                   col = "red",
+                   fill = "green",
+                   alpha = 1) +
+    labs(title = "Histogram for Saved Break Points", 
+       x = "Number of saved break points in one match by the loser", 
+       y = "Count")
+  
+  
+  # CHECK IF DATA ARE CONSISTENT
+  # obtaining win game per match per player
+  score <- tennis2019$score
+  nbrWinGame_Winner <- c()
+  nbrWinGame_loser <- c()
+  
+  for (i in 1:length(score)) {
+    h <- unlist(strsplit(score[i], "")) # to store letter by letter the score
+    a <- 0 #to calculate the win game of the winner in match i
+    b <- 0 #to calculate the win game of the loser in match i
+    for (j in 1:length(h)){
+      if (h[j] == "-") {
+        a <- a + as.numeric(h[j-1])
+        b <- b + as.numeric(h[j+1])
+      }
+    }
+    nbrWinGame_loser <- append(nbrWinGame_loser, b)
+    nbrWinGame_Winner <- append(nbrWinGame_Winner, a)
+  }
+  
+  # verifying the two equations
+  ValidDataPoint <- c() # if i-th component 0, then match i is non valid
+  equation_winner <- tennis2019$w_SvGms - nbrWinGame_Winner + tennis2019$w_bpSaved - tennis2019$l_bpSaved
+  equation_loser <- tennis2019$l_SvGms - nbrWinGame_loser + tennis2019$l_bpSaved - tennis2019$w_bpSaved
+  for (i in 1:2781){
+    if (is.na(equation_winner[i]) || is.na(equation_loser)){
+      ValidDataPoint <- append(ValidDataPoint, 0)
+    } else if (equation_winner[i] == 0 & equation_loser[i] == 0){
+      ValidDataPoint <- append(ValidDataPoint, 1)
+    } else {
+      ValidDataPoint <- append(ValidDataPoint, 0)
+    }
+  }
+  sum(ValidDataPoint)
+  
+  #verifying the two euations for other definition of saved/faced break point
+  ValidDataPoint <- c() # if i-th component 0, then match i is non valid
+  equation_winner <- tennis2019$w_SvGms - nbrWinGame_Winner + tennis2019$l_bpFaced - tennis2019$l_bpSaved - tennis2019$w_bpFaced + tennis2019$w_bpSaved
+  equation_loser <- tennis2019$l_SvGms - nbrWinGame_loser + tennis2019$w_bpFaced - tennis2019$w_bpSaved - tennis2019$l_bpFaced + tennis2019$l_bpSaved
+  for (i in 1:2781){
+    if (is.na(equation_winner[i]) || is.na(equation_loser)){
+      ValidDataPoint <- append(ValidDataPoint, 0)
+    } else if (equation_winner[i] == 0 & equation_loser[i] == 0){
+      ValidDataPoint <- append(ValidDataPoint, 1)
+    } else {
+      ValidDataPoint <- append(ValidDataPoint, 0)
+    }
+  }
+  sum(ValidDataPoint)
+  
+  
+  #SAME ANALYSIS BUT WITH CORRECTED DATA 
+  winnerFacedBreakPointCorrect <- c()
+  winnerSavedBreakPointCorrect <- c()
+  loserFacedBreakPointCorrect <- c()
+  loserSavedBreakPointCorrect <- c()
+  for (i in 1:length(ValidDataPoint)){
+    if (ValidDataPoint[i] == 1) {
+      winnerFacedBreakPointCorrect <- append(winnerFacedBreakPointCorrect, tennis2019$w_bpFaced[i])
+      winnerSavedBreakPointCorrect <- append(winnerSavedBreakPointCorrect, tennis2019$w_bpSaved[i])
+      loserFacedBreakPointCorrect <- append(loserFacedBreakPointCorrect, tennis2019$l_bpFaced[i])
+      loserSavedBreakPointCorrect <- append(loserSavedBreakPointCorrect, tennis2019$l_bpSaved[i])
+    }
+  }
+  
+  #means calculation
+  mean(winnerFacedBreakPointCorrect)
+  mean(loserFacedBreakPointCorrect)
+  median(sort(winnerFacedBreakPointCorrect, decreasing = FALSE))
+  median(sort(loserFacedBreakPointCorrect, decreasing = FALSE))
+  
+  mean(winnerSavedBreakPointCorrect)
+  mean(loserSavedBreakPointCorrect)
+  median(sort(winnerSavedBreakPointCorrect, decreasing = FALSE))
+  median(sort(loserSavedBreakPointCorrect, decreasing = FALSE))
+  
+  
+  # histogram of the break point Faced by the loser 
+  ggplot(data = as.data.frame(loserFacedBreakPointCorrect), aes(loserFacedBreakPointCorrect)) +
+    geom_histogram(breaks = seq(-1,30, by=1),
+                   col = "red",
+                   fill = "green",
+                   alpha = 1) +
+    labs(title = "Histogram for Faced Break points after correction of the data", 
+         x = "Number of faced break points in one match by the loser", 
+         y = "Count")
+  
+  # histogram of the break point Faced by the winner 
+  ggplot(data = as.data.frame(winnerFacedBreakPointCorrect), aes(winnerFacedBreakPointCorrect)) +
+    geom_histogram(breaks = seq(-1,30, by=1),
+                   col = "red",
+                   fill = "green",
+                   alpha = 1) +
+    labs(title = "Histogram for Faced Break points after correction of the data", 
+         x = "Number of faced break points in one match by the winner", 
+         y = "Count")
+  
+  # histogram of the break point Saved by the loser 
+  ggplot(data = as.data.frame(loserSavedBreakPointCorrect), aes(loserSavedBreakPointCorrect)) +
+    geom_histogram(breaks = seq(-1,30, by=1),
+                   col = "red",
+                   fill = "blue",
+                   alpha = 1) +
+    labs(title = "Histogram for Saved Break points after correction of the data", 
+         x = "Number of saved break points in one match by the loser", 
+         y = "Count")
+  
+  # histogram of the break point Saved by the winner 
+  ggplot(data = as.data.frame(winnerSavedBreakPointCorrect), aes(winnerSavedBreakPointCorrect)) +
+    geom_histogram(breaks = seq(-1,30, by=1),
+                   col = "red",
+                   fill = "blue",
+                   alpha = 1) +
+    labs(title = "Histogram for Saved Break points after correction of the data", 
+         x = "Number of Saved break points in one match by the winner", 
+         y = "Count")
+  
+  # calculation of the ratio of saved break point of the winner/loser for each match.
+  winnerRatio <- winnerSavedBreakPointCorrect / winnerFacedBreakPointCorrect
+  loserRatio <- loserSavedBreakPointCorrect / loserFacedBreakPointCorrect  
+  
+  #labeling matches with winner best ratio of saved bp
+  bestRatioWinner <- c() # 1 if winner ratio strictly greater than loser ratio for match i
+  nbrGreater <- 0
+  nbrLower <- 0
+  nbrEqual <- 0
+  for (i in 1:length(winnerRatio)){
+    if (winnerRatio[i] > loserRatio[i]){
+      bestRatioWinner <- append(bestRatioWinner, 1)
+      nbrGreater <- nbrGreater + 1
+    } else if (winnerRatio[i] == loserRatio[i]) {
+      bestRatioWinner <- append(bestRatioWinner, 0)
+      nbrEqual <- nbrEqual + 1 
+    } else {
+      bestRatioWinner <- append(bestRatioWinner, 0)
+      nbrLower <- nbrLower + 1 
+    }
+  }
+  
+  # bar plot for the ratio
+  ratio <- data.frame(count = c(nbrGreater, nbrEqual, nbrLower),
+                      Categories = c("Greater", "Equal", "Lower"))
+  ggplot(data = ratio, mapping = aes(x = Categories, y = count)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = count), vjust = -0.2, size = 5, position = position_dodge(0.9))
+  
+
+  # histogram of the winner ratio 
+  ggplot(data= as.data.frame(winnerRatio), aes(winnerRatio)) + 
+    geom_histogram(breaks=seq(0, 1, by=0.1),
+                   col = "red",
+                   fill = "yellow",
+                   alpha = 1) +
+    labs(title = "Histogram for Break Points", 
+         x = "Ratio of saved break points in one match by the Winner", 
+         y = "Count") +
+    xlim(c(0,1)) +
+    ylim(c(0,30))
+  
+  # histogram of the loser ratio 
+  ggplot(data= as.data.frame(loserRatio), aes(loserRatio)) + 
+    geom_histogram(breaks=seq(0, 1, by=0.1),
+                   col = "blue",
+                   fill = "red",
+                   alpha = 1) +
+    labs(title = "Histogram for Break Points", 
+         x = "Ratio of saved break points in one match by the loser", 
+         y = "Count") +
+    xlim(c(0,1)) +
+    ylim(c(0,30))
+  
+  
+  
+  

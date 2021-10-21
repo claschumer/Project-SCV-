@@ -189,3 +189,19 @@ ggplot(data= as.data.frame(loserRatio), aes(loserRatio)) +
   xlim(c(-0.1,1)) +
   ylim(c(0,550))
 
+
+mean(winnerRatio)
+mean(loserRatio)
+median(sort(winnerRatio, decreasing = FALSE))
+median(sort(loserRatio, decreasing = FALSE))
+
+
+#looking at matches where the loser ratio is equal to one
+position <- c()
+for (i in 1: length(loserRatio)){ 
+  if (loserRatio[i] == 1){
+    position <- append(position, i)
+  }
+}
+loser.bp[position]
+loser.confirmed.bp[position]
