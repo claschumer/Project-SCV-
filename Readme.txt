@@ -25,11 +25,12 @@ This repository has the following structure:
 |    	    └── …
 ├── Name of the members.txt
 ├── Overleaf Report.txt
-├── Physical characteristics and ATP score.R			#Clarisse Schumer
+├── Left_RightHanded and performance.R			#Clarisse Schumer
 └── Statistiques entre le sets					#Paul Bagourd
 	├── Best of 3 - statistics of the first two sets.R
 	├── Best of 5.R
 	└── Statistiques entre les sets.R
+└── Presentation of the data                                     #Clarisse Schumer 
 
 
 =========================================================
