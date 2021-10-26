@@ -1,3 +1,15 @@
+library(base)
+library(datasets)
+library(graphics)
+library(grDevices)
+library(ggplot2)
+library(methods)
+library(RColorBrewer)
+library(stats)
+library(utils)
+
+
+
 # importing the data from 2019
 tennis2019 <- read.csv("C:/Users/ilanp/Documents/EPFL/Mathématiques/MA master sem 3 automne 2021/Statistical Computation and Visualization/tennis_atp-master/atp_matches_2019.csv")
 
@@ -86,7 +98,9 @@ ggplot(data = as.data.frame(loser.bp), aes(loser.bp)) +
                  alpha = 1) +
   theme_bw() +
   labs(x = "Number of obtained break points in one match by the loser", 
-       y = "Count")
+       y = "Count")+
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 # histogram of the break point Obtained by the winner 
 ggplot(data = as.data.frame(winner.bp), aes(winner.bp)) +
@@ -96,7 +110,9 @@ ggplot(data = as.data.frame(winner.bp), aes(winner.bp)) +
                  alpha = 1) +
   theme_bw() +
   labs(x = "Number of obtained break points in one match by the winner", 
-       y = "Count")
+       y = "Count")+
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 # histogram of the break point Confirmed by the loser 
 ggplot(data = as.data.frame(loser.confirmed.bp), aes(loser.confirmed.bp)) +
@@ -106,7 +122,9 @@ ggplot(data = as.data.frame(loser.confirmed.bp), aes(loser.confirmed.bp)) +
                  alpha = 1) +
   theme_bw() +
   labs(x = "Number of confirmed break points in one match by the loser", 
-       y = "Count")
+       y = "Count")+
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 # histogram of the break point Confirmed by the winner 
 ggplot(data = as.data.frame(winner.confirmed.bp), aes(winner.confirmed.bp)) +
@@ -116,7 +134,9 @@ ggplot(data = as.data.frame(winner.confirmed.bp), aes(winner.confirmed.bp)) +
                  alpha = 1) +
   theme_bw() +
   labs(x = "Number of confirmed break points in one match by the winner", 
-       y = "Count")
+       y = "Count")+
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 # calculation of the ratio of confirmed break point of the winner/loser for each match.
 winnerRatio <- winner.confirmed.bp / winner.bp  
@@ -162,7 +182,9 @@ ggplot(data = ratio, mapping = aes(x = Categories, y = count)) +
            fill = color[3],
            alpha = 1) +
   theme_bw() +
-  geom_text(aes(label = count), vjust = -0.2, size = 5, position = position_dodge(0.9))
+  geom_text(aes(label = count), vjust = -0.2, size = 5, position = position_dodge(0.9)) +
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 
 # histogram of the winner ratio 
@@ -175,7 +197,9 @@ ggplot(data= as.data.frame(winnerRatio), aes(winnerRatio)) +
   labs(x = "Ratio of confirmed break points in one match by the Winner", 
        y = "Count") +
   xlim(c(0,1)) +
-  ylim(c(0,500))
+  ylim(c(0,500)) +
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 # histogram of the loser ratio 
 ggplot(data= as.data.frame(loserRatio), aes(loserRatio)) + 
@@ -187,7 +211,9 @@ ggplot(data= as.data.frame(loserRatio), aes(loserRatio)) +
   labs(x = "Ratio of confirmed break points in one match by the loser", 
        y = "Count") +
   xlim(c(-0.1,1)) +
-  ylim(c(0,550))
+  ylim(c(0,550))+
+  theme(axis.title = element_text(size = 25),
+        axis.text = element_text(size = 20))
 
 
 mean(winnerRatio)
@@ -205,3 +231,4 @@ for (i in 1: length(loserRatio)){
 }
 loser.bp[position]
 loser.confirmed.bp[position]
+
