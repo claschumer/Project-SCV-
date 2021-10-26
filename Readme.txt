@@ -25,7 +25,7 @@ This repository has the following structure:
 |    	    └── …
 ├── Name of the members.txt
 ├── Overleaf Report.txt
-├── Left_RightHanded and performance.R			#Clarisse Schumer
+├── Left:RightHanded.R			#Clarisse Schumer
 └── Statistiques entre le sets					#Paul Bagourd
 	├── Best of 3 - statistics of the first two sets.R
 	├── Best of 5.R
