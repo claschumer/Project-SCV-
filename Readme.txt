@@ -53,6 +53,7 @@ I define different characteristics to evaluate the performance of the serve (per
 Then I study the correlation of these characteristics with the height and the indicator of performance. 
 Mke histogram and boxplot to visualize the data-landscape around the notion of serve. 
 NEXT STEP: analysis and write properly in the report.
+Week 18 october: write part og the report about age, height and performance
 
 	-Ilan Perez
 
